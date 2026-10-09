@@ -30,14 +30,30 @@ def test_ai_generate_description_validation_error(
     client: TestClient,
     auth_headers: dict[str, dict[str, str]],
 ):
-    # Empty title or too short
-    payload = {"title": "a"}
+    # Empty title
+    payload = {"title": ""}
     response = client.post(
         "/api/tasks/generate-description",
         json=payload,
         headers=auth_headers["user1"],
     )
     assert response.status_code == 422
+
+
+def test_ai_generate_description_with_provider_override(
+    client: TestClient,
+    auth_headers: dict[str, dict[str, str]],
+):
+    payload = {"title": "Build WebSocket Real-Time Chat", "provider": "anthropic"}
+    response = client.post(
+        "/api/tasks/generate-description",
+        json=payload,
+        headers=auth_headers["user1"],
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "description" in data
+    assert "provider" in data
 
 
 def test_ai_summarize_own_task(

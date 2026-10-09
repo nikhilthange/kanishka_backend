@@ -6,8 +6,8 @@
 [![Database](https://img.shields.io/badge/Database-PostgreSQL%20%7C%20MySQL%20%7C%20SQLite-336791.svg)](https://www.sqlalchemy.org/)
 [![Migrations](https://img.shields.io/badge/Migrations-Alembic-red.svg)](https://alembic.sqlalchemy.org/)
 [![Security](https://img.shields.io/badge/Auth-JWT%20%2B%20Bcrypt-orange.svg)](https://pyjwt.readthedocs.io/)
-[![AI Integration](https://img.shields.io/badge/AI-Google%20Gemini%20%7C%20OpenAI-purple.svg)](https://ai.google.dev/)
-[![Tests](https://img.shields.io/badge/Tests-33%2F33%20Passing-brightgreen.svg)](https://pytest.org/)
+[![AI Integration](https://img.shields.io/badge/AI-Gemini%20%7C%20OpenAI%20%7C%20Claude-purple.svg)](https://ai.google.dev/)
+[![Tests](https://img.shields.io/badge/Tests-34%2F34%20Passing-brightgreen.svg)](https://pytest.org/)
 
 A production-ready **AI-Powered Task Management System** developed for the **Kanishka Software Python & AI Integration Intern Assessment**. 
 
@@ -23,6 +23,7 @@ graph TD
     Service -->|Pluggable Interface| AIService[AI Service Layer]
     AIService -->|Google SDK| Gemini[Google Gemini LLM]
     AIService -->|OpenAI SDK| OpenAI[OpenAI GPT-4o-mini]
+    AIService -->|Anthropic SDK| Claude[Anthropic Claude 3.5 / Haiku]
     AIService -->|Zero-Config Fallback| Mock[Intelligent Offline Mock Provider]
 ```
 

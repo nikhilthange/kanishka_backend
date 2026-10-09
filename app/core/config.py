@@ -40,10 +40,10 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
 
-    # AI Configuration (supports 'gemini', 'openai', or 'mock')
-    AI_PROVIDER: Literal["gemini", "openai", "mock"] = Field(
+    # AI Configuration (supports 'gemini', 'openai', 'anthropic', or 'mock')
+    AI_PROVIDER: Literal["gemini", "openai", "anthropic", "mock"] = Field(
         default="gemini",
-        description="LLM provider: gemini or openai (falls back gracefully to mock if no key)",
+        description="LLM provider: gemini, openai, or anthropic (falls back gracefully to mock if no key)",
     )
     GEMINI_API_KEY: str | None = Field(
         default=None,
@@ -53,8 +53,13 @@ class Settings(BaseSettings):
         default=None,
         description="OpenAI API key",
     )
+    ANTHROPIC_API_KEY: str | None = Field(
+        default=None,
+        description="Anthropic Claude API key",
+    )
     GEMINI_MODEL: str = "gemini-1.5-flash"
     OPENAI_MODEL: str = "gpt-4o-mini"
+    ANTHROPIC_MODEL: str = "claude-3-haiku-20240307"
 
 
 settings = Settings()

@@ -2,6 +2,7 @@ import logging
 from app.ai.base import BaseAIProvider
 from app.ai.gemini_provider import GeminiProvider
 from app.ai.openai_provider import OpenAIProvider
+from app.ai.anthropic_provider import AnthropicProvider
 from app.ai.mock_provider import MockProvider
 from app.core.config import settings
 
@@ -48,6 +49,20 @@ class AIService:
                         return self._get_mock_provider(), "mock"
                 return self._cache["openai"], "openai"
             return self._get_mock_provider(), "mock (OpenAI API key not configured)"
+
+        elif target == "anthropic":
+            if settings.ANTHROPIC_API_KEY and settings.ANTHROPIC_API_KEY.strip():
+                if "anthropic" not in self._cache:
+                    try:
+                        self._cache["anthropic"] = AnthropicProvider(
+                            api_key=settings.ANTHROPIC_API_KEY,
+                            model_name=settings.ANTHROPIC_MODEL,
+                        )
+                    except Exception as e:
+                        logger.warning(f"Could not initialize Anthropic ({e}). Falling back to Mock.")
+                        return self._get_mock_provider(), "mock"
+                return self._cache["anthropic"], "anthropic"
+            return self._get_mock_provider(), "mock (Anthropic API key not configured)"
 
         else:
             return self._get_mock_provider(), "mock"
