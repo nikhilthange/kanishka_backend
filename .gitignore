@@ -53,3 +53,6 @@ htmlcov/
 *.db
 *.sqlite
 *.sqlite3
+
+# Personal Notes & Interview Prep
+INTERVIEW_GUIDE.md
