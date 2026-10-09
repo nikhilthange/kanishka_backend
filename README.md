@@ -6,7 +6,7 @@
 [![Migrations](https://img.shields.io/badge/Migrations-Alembic-red.svg)](https://alembic.sqlalchemy.org/)
 [![Security](https://img.shields.io/badge/Auth-JWT%20%2B%20Bcrypt-orange.svg)](https://pyjwt.readthedocs.io/)
 [![AI Integration](https://img.shields.io/badge/AI-Google%20Gemini%20%7C%20OpenAI-purple.svg)](https://ai.google.dev/)
-[![Tests](https://img.shields.io/badge/Tests-29%2F29%20Passing-brightgreen.svg)](https://pytest.org/)
+[![Tests](https://img.shields.io/badge/Tests-30%2F30%20Passing-brightgreen.svg)](https://pytest.org/)
 
 A production-ready **AI-Powered Task Management System** developed for the **Kanishka Software Python & AI Integration Intern Assessment**. 
 

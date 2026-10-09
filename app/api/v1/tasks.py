@@ -62,6 +62,7 @@ def summarize_task(
     )
 
 
+@router.post("", response_model=TaskResponse, status_code=status.HTTP_201_CREATED, include_in_schema=False)
 @router.post(
     "/",
     response_model=TaskResponse,
@@ -77,6 +78,7 @@ def create_task(
     return TaskService.create_task(db=db, task_in=task_in, current_user=current_user)
 
 
+@router.get("", response_model=TaskListResponse, include_in_schema=False)
 @router.get(
     "/",
     response_model=TaskListResponse,

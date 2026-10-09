@@ -91,6 +91,13 @@ class TaskService:
             task.title = task_in.title.strip()
         if task_in.description is not None:
             task.description = task_in.description.strip()
+        if task_in.status is not None:
+            if current_user.role != UserRole.ADMIN.value:
+                raise ForbiddenException(
+                    detail="Access denied: Regular users are not authorized to update task status. "
+                           "Only administrators can update task status."
+                )
+            task.status = task_in.status.value
 
         task.updated_at = datetime.now(timezone.utc)
         db.commit()

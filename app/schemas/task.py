@@ -16,7 +16,10 @@ class TaskCreate(TaskBase):
 class TaskUpdate(BaseModel):
     title: str | None = Field(default=None, min_length=1, max_length=255)
     description: str | None = Field(default=None)
-    # Note: status is intentionally separate or restricted to Admin in service layer
+    status: TaskStatus | None = Field(
+        default=None,
+        description="Status update is strictly restricted to administrators.",
+    )
 
 
 class TaskStatusUpdate(BaseModel):

@@ -60,6 +60,21 @@ def test_regular_user_cannot_update_task_status_put(
     assert response.status_code == 403
 
 
+def test_regular_user_cannot_update_status_via_general_put(
+    client: TestClient,
+    auth_headers: dict[str, dict[str, str]],
+    sample_tasks: list[Task],
+):
+    target_task = sample_tasks[0]
+    response = client.put(
+        f"/api/tasks/{target_task.id}",
+        json={"title": "Updated Title", "status": "Completed"},
+        headers=auth_headers["user1"],
+    )
+    assert response.status_code == 403
+    assert "regular users are not authorized to update task status" in response.json()["detail"].lower()
+
+
 def test_admin_can_update_task_status(
     client: TestClient,
     auth_headers: dict[str, dict[str, str]],
