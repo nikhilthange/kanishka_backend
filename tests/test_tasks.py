@@ -76,3 +76,21 @@ def test_edit_own_task(
     data = response.json()
     assert data["title"] == update_data["title"]
     assert data["description"] == update_data["description"]
+
+
+def test_api_v1_alias_routing(
+    client: TestClient,
+    auth_headers: dict[str, dict[str, str]],
+):
+    response = client.get("/api/v1/tasks", headers=auth_headers["user1"])
+    assert response.status_code == 200
+    assert "tasks" in response.json()
+
+
+def test_endpoint_without_trailing_slash(
+    client: TestClient,
+    auth_headers: dict[str, dict[str, str]],
+):
+    response = client.get("/api/tasks", headers=auth_headers["user1"])
+    assert response.status_code == 200
+    assert "tasks" in response.json()

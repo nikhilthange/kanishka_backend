@@ -97,8 +97,9 @@ async def sqlalchemy_error_handler(request: Request, exc: SQLAlchemyError):
     )
 
 
-# Include API Router
+# Include API Router (/api as specified in assignment, plus /api/v1 compatibility alias)
 app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(api_router, prefix="/api/v1", include_in_schema=False)
 
 
 @app.get("/", tags=["Health"])
