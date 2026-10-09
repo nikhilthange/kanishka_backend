@@ -1,0 +1,47 @@
+name: CI Pipeline - AI Task Management System
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Run Automated Tests & Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+        cache: "pip"
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Alembic Database Migrations
+      env:
+        DATABASE_URL: "sqlite:///./ci_test.db"
+      run: |
+        alembic upgrade head
+
+    - name: Verify Database Seeder Execution
+      env:
+        DATABASE_URL: "sqlite:///./ci_test.db"
+      run: |
+        python seed.py
+
+    - name: Execute Pytest Test Suite (32+ Tests)
+      env:
+        DATABASE_URL: "sqlite:///:memory:"
+        JWT_SECRET_KEY: "ci-test-secret-key-kanishka-software-32-chars-long"
+        AI_PROVIDER: "mock"
+      run: |
+        pytest -v --durations=10

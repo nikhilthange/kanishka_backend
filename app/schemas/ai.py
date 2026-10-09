@@ -9,6 +9,11 @@ class GenerateDescriptionRequest(BaseModel):
         examples=["Set up PostgreSQL database with Alembic migrations"],
         description="Task title for which AI will generate a structured description",
     )
+    provider: str | None = Field(
+        default=None,
+        description="Optional LLM provider override ('gemini', 'openai', or 'mock')",
+        examples=["gemini"],
+    )
 
 
 class GenerateDescriptionResponse(BaseModel):

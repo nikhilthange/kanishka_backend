@@ -94,3 +94,11 @@ def test_endpoint_without_trailing_slash(
     response = client.get("/api/tasks", headers=auth_headers["user1"])
     assert response.status_code == 200
     assert "tasks" in response.json()
+
+
+def test_security_headers_present(client: TestClient):
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.headers["X-Content-Type-Options"] == "nosniff"
+    assert response.headers["X-Frame-Options"] == "DENY"
+    assert response.headers["X-XSS-Protection"] == "1; mode=block"

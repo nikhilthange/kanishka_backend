@@ -1,16 +1,30 @@
 # AI-Powered Task Management System
 
+[![CI Pipeline](https://github.com/nikhilthange/kanishka_backend/actions/workflows/ci.yml/badge.svg)](https://github.com/nikhilthange/kanishka_backend/actions)
 [![Python Version](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org/)
 [![Framework](https://img.shields.io/badge/Framework-FastAPI-009688.svg)](https://fastapi.tiangolo.com/)
 [![Database](https://img.shields.io/badge/Database-PostgreSQL%20%7C%20MySQL%20%7C%20SQLite-336791.svg)](https://www.sqlalchemy.org/)
 [![Migrations](https://img.shields.io/badge/Migrations-Alembic-red.svg)](https://alembic.sqlalchemy.org/)
 [![Security](https://img.shields.io/badge/Auth-JWT%20%2B%20Bcrypt-orange.svg)](https://pyjwt.readthedocs.io/)
 [![AI Integration](https://img.shields.io/badge/AI-Google%20Gemini%20%7C%20OpenAI-purple.svg)](https://ai.google.dev/)
-[![Tests](https://img.shields.io/badge/Tests-32%2F32%20Passing-brightgreen.svg)](https://pytest.org/)
+[![Tests](https://img.shields.io/badge/Tests-33%2F33%20Passing-brightgreen.svg)](https://pytest.org/)
 
 A production-ready **AI-Powered Task Management System** developed for the **Kanishka Software Python & AI Integration Intern Assessment**. 
 
 This application provides a secure REST API backend built with **FastAPI**, featuring JWT authentication, strict role-based access control (RBAC), multi-database support (PostgreSQL / MySQL with Alembic schema migrations and seeders), and dual **AI capabilities** (generating actionable task descriptions and concise task summaries).
+
+```mermaid
+graph TD
+    Client[HTTP Client / Postman / Swagger UI] -->|Bearer JWT| FastAPI[FastAPI REST API /api]
+    FastAPI --> AuthMiddleware[Auth & Security Middleware]
+    AuthMiddleware -->|Validate JWT| RBAC[RBAC Permission Validator]
+    RBAC -->|Admin / User Authorized| Service[Task & Auth Service Layer]
+    Service -->|SQLAlchemy ORM| DB[(PostgreSQL / MySQL / SQLite)]
+    Service -->|Pluggable Interface| AIService[AI Service Layer]
+    AIService -->|Google SDK| Gemini[Google Gemini LLM]
+    AIService -->|OpenAI SDK| OpenAI[OpenAI GPT-4o-mini]
+    AIService -->|Zero-Config Fallback| Mock[Intelligent Offline Mock Provider]
+```
 
 ---
 

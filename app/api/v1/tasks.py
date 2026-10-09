@@ -32,11 +32,11 @@ def generate_task_description(
     req: GenerateDescriptionRequest,
     current_user: User = Depends(get_current_user),
 ):
-    description = ai_service.generate_description(req.title)
+    description, active_provider = ai_service.generate_description(req.title, provider_name=req.provider)
     return GenerateDescriptionResponse(
         title=req.title,
         description=description,
-        provider=ai_service.active_provider_name,
+        provider=active_provider,
     )
 
 
@@ -49,16 +49,21 @@ def generate_task_description(
 )
 def summarize_task(
     id: int,
+    provider: str | None = Query(default=None, description="Optional LLM provider override ('gemini', 'openai')"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     task = TaskService.get_task_by_id(db=db, task_id=id, current_user=current_user)
-    summary = ai_service.summarize_task(title=task.title, description=task.description or "")
+    summary, active_provider = ai_service.summarize_task(
+        title=task.title,
+        description=task.description or "",
+        provider_name=provider,
+    )
     return SummarizeTaskResponse(
         task_id=task.id,
         title=task.title,
         summary=summary,
-        provider=ai_service.active_provider_name,
+        provider=active_provider,
     )
 
 

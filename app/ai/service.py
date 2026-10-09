@@ -9,57 +9,70 @@ logger = logging.getLogger(__name__)
 
 
 class AIService:
+    """
+    Pluggable AI Service manager supporting dynamic provider selection,
+    connection caching, and graceful offline fallback.
+    """
+
     def __init__(self):
-        self._provider_name: str = settings.AI_PROVIDER.lower()
-        self._provider: BaseAIProvider = self._resolve_provider()
+        self._cache: dict[str, BaseAIProvider] = {}
 
-    def _resolve_provider(self) -> BaseAIProvider:
-        """Resolve and instantiate the configured AI provider with graceful fallback."""
-        if self._provider_name == "gemini":
+    def get_provider(self, provider_name: str | None = None) -> tuple[BaseAIProvider, str]:
+        """Resolve and retrieve an AI provider instance."""
+        target = (provider_name or settings.AI_PROVIDER).lower().strip()
+
+        if target == "gemini":
             if settings.GEMINI_API_KEY and settings.GEMINI_API_KEY.strip():
-                try:
-                    logger.info("Initializing Google Gemini AI provider.")
-                    return GeminiProvider(
-                        api_key=settings.GEMINI_API_KEY,
-                        model_name=settings.GEMINI_MODEL,
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to initialize Gemini provider ({e}). Falling back to MockProvider.")
-            else:
-                logger.info("No GEMINI_API_KEY detected. Using intelligent Mock AI provider.")
-            self._provider_name = "mock"
-            return MockProvider()
+                if "gemini" not in self._cache:
+                    try:
+                        self._cache["gemini"] = GeminiProvider(
+                            api_key=settings.GEMINI_API_KEY,
+                            model_name=settings.GEMINI_MODEL,
+                        )
+                    except Exception as e:
+                        logger.warning(f"Could not initialize Gemini ({e}). Falling back to Mock.")
+                        return self._get_mock_provider(), "mock"
+                return self._cache["gemini"], "gemini"
+            return self._get_mock_provider(), "mock (Gemini API key not configured)"
 
-        elif self._provider_name == "openai":
+        elif target == "openai":
             if settings.OPENAI_API_KEY and settings.OPENAI_API_KEY.strip():
-                try:
-                    logger.info("Initializing OpenAI provider.")
-                    return OpenAIProvider(
-                        api_key=settings.OPENAI_API_KEY,
-                        model_name=settings.OPENAI_MODEL,
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to initialize OpenAI provider ({e}). Falling back to MockProvider.")
-            else:
-                logger.info("No OPENAI_API_KEY detected. Using intelligent Mock AI provider.")
-            self._provider_name = "mock"
-            return MockProvider()
+                if "openai" not in self._cache:
+                    try:
+                        self._cache["openai"] = OpenAIProvider(
+                            api_key=settings.OPENAI_API_KEY,
+                            model_name=settings.OPENAI_MODEL,
+                        )
+                    except Exception as e:
+                        logger.warning(f"Could not initialize OpenAI ({e}). Falling back to Mock.")
+                        return self._get_mock_provider(), "mock"
+                return self._cache["openai"], "openai"
+            return self._get_mock_provider(), "mock (OpenAI API key not configured)"
 
         else:
-            self._provider_name = "mock"
-            return MockProvider()
+            return self._get_mock_provider(), "mock"
+
+    def _get_mock_provider(self) -> BaseAIProvider:
+        if "mock" not in self._cache:
+            self._cache["mock"] = MockProvider()
+        return self._cache["mock"]
 
     @property
     def active_provider_name(self) -> str:
-        return self._provider_name
+        _, name = self.get_provider()
+        return name
 
-    def generate_description(self, title: str) -> str:
-        """Generate a description using the active AI provider."""
-        return self._provider.generate_description(title)
+    def generate_description(self, title: str, provider_name: str | None = None) -> tuple[str, str]:
+        """Generate a description, returning (description_text, active_provider_name)."""
+        provider, resolved_name = self.get_provider(provider_name)
+        desc = provider.generate_description(title)
+        return desc, resolved_name
 
-    def summarize_task(self, title: str, description: str) -> str:
-        """Generate a summary using the active AI provider."""
-        return self._provider.summarize_task(title, description)
+    def summarize_task(self, title: str, description: str, provider_name: str | None = None) -> tuple[str, str]:
+        """Generate a summary, returning (summary_text, active_provider_name)."""
+        provider, resolved_name = self.get_provider(provider_name)
+        summary = provider.summarize_task(title, description)
+        return summary, resolved_name
 
 
 ai_service = AIService()
