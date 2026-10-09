@@ -248,11 +248,13 @@ All variables are loaded via Pydantic Settings from `.env`:
 | `JWT_SECRET_KEY` | string | `super-secret-kanishka...` | Secret key for signing JWTs |
 | `JWT_ALGORITHM` | string | `HS256` | JWT signature algorithm |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | int | `1440` (24h) | JWT access token expiration duration |
-| `AI_PROVIDER` | string | `gemini` | Active LLM (`gemini`, `openai`, or `mock`) |
+| `AI_PROVIDER` | string | `gemini` | Active LLM (`gemini`, `openai`, `anthropic`, or `mock`) |
 | `GEMINI_API_KEY` | string | `None` | Google Gemini API Key |
 | `GEMINI_MODEL` | string | `gemini-1.5-flash` | Gemini model name |
 | `OPENAI_API_KEY` | string | `None` | OpenAI API Key |
 | `OPENAI_MODEL` | string | `gpt-4o-mini` | OpenAI model name |
+| `ANTHROPIC_API_KEY` | string | `None` | Anthropic Claude API Key |
+| `ANTHROPIC_MODEL` | string | `claude-3-haiku-20240307` | Anthropic model name |
 
 > **Security Note**: As per assessment guidelines, no `.env` files containing secrets or real API keys are committed to version control. `.env` is listed in `.gitignore`.
 
@@ -274,7 +276,15 @@ The application includes an **Abstract Provider Architecture** (`app/ai/base.py`
      OPENAI_MODEL="gpt-4o-mini"
      ```
 
-3. **Intelligent Offline Mock Provider (Zero-Cost Evaluation)**:
+3. **Anthropic Claude**:
+   - Set in `.env`:
+     ```env
+     AI_PROVIDER="anthropic"
+     ANTHROPIC_API_KEY="sk-ant-..."
+     ANTHROPIC_MODEL="claude-3-haiku-20240307"
+     ```
+
+4. **Intelligent Offline Mock Provider (Zero-Cost Evaluation)**:
    - If no API key is specified, the application activates an intelligent built-in mock provider that delivers realistic, structured, professional task descriptions and summaries.
    - Evaluators can test both AI endpoints immediately **without needing an API key** or incurring charges.
 

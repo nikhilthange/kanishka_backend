@@ -38,7 +38,7 @@ jobs:
       run: |
         python seed.py
 
-    - name: Execute Pytest Test Suite (32+ Tests)
+    - name: Execute Pytest Test Suite (34 Tests)
       env:
         DATABASE_URL: "sqlite:///:memory:"
         JWT_SECRET_KEY: "ci-test-secret-key-kanishka-software-32-chars-long"
